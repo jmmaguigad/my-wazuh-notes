@@ -1,0 +1,15 @@
+This note shows my troubleshooting procedure for no alert showing in my Wazuh Instance. I have run the following
+# Check status of filebeat
+systemctl status filebeat
+# Check filebeat can actually reach the indexer with its stored credentials
+~#sudo filebeat test output -c /etc/filebeat/filebeat.yml
+# Since i saw that there is Error 401 Unauthorized, this means there is credential mismatch.
+sudo filebeat keystore add username --force
+# type: admin
+sudo filebeat keystore add password --force
+# type: youradminpassword
+# Restart Filebeat
+sudo systemctl restart filebeat
+sleep 10
+sudo filebeat test output -c /etc/filebeat/filebeat.yml
+# Expected output: talk to server... OK
